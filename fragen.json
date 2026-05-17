@@ -1,0 +1,80 @@
+[
+  {
+    "id": 1,
+    "thema": "Bugs & Fehler",
+    "frage": "Was ist ein Syntaxfehler?",
+    "musterloesung": "Ein Syntaxfehler ist ein Fehler im Code, der durch falsche Schreibweise entsteht, zum Beispiel eine vergessene Klammer oder ein fehlendes Semikolon. Der Code kann dadurch nicht ausgeführt werden."
+  },
+  {
+    "id": 2,
+    "thema": "Bugs & Fehler",
+    "frage": "Was ist ein Logikfehler und warum ist er schwer zu finden?",
+    "musterloesung": "Ein Logikfehler bedeutet, dass der Code syntaktisch korrekt ist und läuft, aber das falsche Ergebnis liefert, weil die Programmlogik falsch umgesetzt wurde. Er ist schwer zu finden, weil keine Fehlermeldung erscheint."
+  },
+  {
+    "id": 3,
+    "thema": "Bugs & Fehler",
+    "frage": "Was ist ein Laufzeitfehler? Nenne ein Beispiel.",
+    "musterloesung": "Ein Laufzeitfehler tritt während der Programmausführung auf und führt oft zu einem Absturz. Ein Beispiel ist die Division durch Null oder ein ungültiger Zugriff auf einen Speicherbereich."
+  },
+  {
+    "id": 4,
+    "thema": "Bugs & Fehler",
+    "frage": "Was bedeutet Debugging?",
+    "musterloesung": "Debugging ist der Prozess des Findens und Behebens von Fehlern (Bugs) in einem Programm. Dazu werden oft spezielle Tools in einer IDE verwendet."
+  },
+  {
+    "id": 5,
+    "thema": "Bugs & Fehler",
+    "frage": "Woher stammt der Begriff Bug in der Informatik?",
+    "musterloesung": "Der Begriff Bug stammt aus dem Jahr 1945, als eine echte Motte im Computer Mark II gefunden wurde und diesen zum Absturz brachte. Seitdem wird Bug als Begriff für Programmfehler verwendet."
+  },
+  {
+    "id": 6,
+    "thema": "Software-Updates",
+    "frage": "Warum sind Software-Updates wichtig?",
+    "musterloesung": "Software-Updates sind wichtig, weil sie Sicherheitslücken schließen, Bugs beheben, neue Funktionen hinzufügen und die Leistung sowie Kompatibilität verbessern."
+  },
+  {
+    "id": 7,
+    "thema": "Software-Updates",
+    "frage": "Welche Nachteile können Updates haben?",
+    "musterloesung": "Updates können viel Zeit und Speicherplatz brauchen, neue Bugs einführen und benötigen Datenvolumen beim Download."
+  },
+  {
+    "id": 8,
+    "thema": "Software-Updates",
+    "frage": "Nenne drei Arten von Software, die Updates erhalten können.",
+    "musterloesung": "Betriebssysteme wie Windows, Programme wie Office, Spiele wie Roblox und Apps wie Subway Surfer können Updates erhalten."
+  },
+  {
+    "id": 9,
+    "thema": "Suchmaschinen",
+    "frage": "Erkläre den Begriff Crawling bei Suchmaschinen.",
+    "musterloesung": "Crawling ist der erste Schritt einer Suchmaschine. Dabei durchsuchen automatische Programme, sogenannte Crawler, das Internet systematisch nach neuen oder aktualisierten Inhalten."
+  },
+  {
+    "id": 10,
+    "thema": "Suchmaschinen",
+    "frage": "Was passiert bei der Indexierung?",
+    "musterloesung": "Bei der Indexierung werden die gefundenen Webseiten sortiert und in einem riesigen Archiv gespeichert, damit sie bei einer Suchanfrage schnell gefunden werden können."
+  },
+  {
+    "id": 11,
+    "thema": "Suchmaschinen",
+    "frage": "Was versteht man unter Ranking bei einer Suchmaschine?",
+    "musterloesung": "Beim Ranking bewertet der Algorithmus alle indizierten Seiten und wählt die relevantesten Treffer für eine Suchanfrage aus, die dann in der Ergebnisliste angezeigt werden."
+  },
+  {
+    "id": 12,
+    "thema": "Suchmaschinen",
+    "frage": "In welcher Reihenfolge arbeitet eine Suchmaschine?",
+    "musterloesung": "Eine Suchmaschine arbeitet in drei Schritten: zuerst Crawling, dann Indexierung und zuletzt Ranking."
+  },
+  {
+    "id": 13,
+    "thema": "Bugs & Fehler",
+    "frage": "Dies ist eine Testfrage! Stelle sie mir wie eine normale Frage!",
+    "musterloesung": "Test! Test ist die Antwort!"
+  }
+]

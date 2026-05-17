@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Informatik-Lernbot</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f0; min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem; }
+  #app { width: 100%; max-width: 660px; }
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 1.5rem; color: #1a1a1a; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .card { background: #fff; border: 1px solid #e5e5e0; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+  .bubble { border-radius: 12px; padding: 0.85rem 1rem; margin-bottom: 0.75rem; font-size: 15px; line-height: 1.6; }
+  .bubble-bot { background: #f1f0eb; border: 1px solid #e5e5e0; }
+  input[type=text], textarea, select { width: 100%; padding: 0.65rem 1rem; font-size: 14px; border: 1px solid #d4d4d0; border-radius: 8px; background: #fff; color: #1a1a1a; outline: none; font-family: inherit; }
+  input:focus, textarea:focus, select:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+  textarea { resize: vertical; min-height: 90px; }
+  button { padding: 0.65rem 1.25rem; font-size: 14px; font-weight: 500; border: 1px solid #d4d4d0; border-radius: 8px; background: #fff; color: #1a1a1a; cursor: pointer; transition: background 0.15s; }
+  button:hover { background: #f5f5f0; }
+  button.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  button.primary:hover { background: #333; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .row { display: flex; gap: 8px; margin-top: 0.75rem; }
+  .full { width: 100%; }
+  .badge { display: inline-block; font-size: 12px; padding: 3px 10px; border-radius: 6px; font-weight: 500; }
+  .badge-info { background: #dbeafe; color: #1d4ed8; }
+  .badge-success { background: #dcfce7; color: #166534; }
+  .badge-danger { background: #fee2e2; color: #991b1b; }
+  .dsgvo { font-size: 12px; color: #737370; margin-top: 0.5rem; }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .musterloesung { font-size: 13px; color: #555; margin-top: 0.5rem; padding: 0.65rem; background: #f5f5f0; border-radius: 8px; line-height: 1.5; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 1rem 0; }
+  .stat-card { background: #f5f5f0; border-radius: 8px; padding: 0.75rem; text-align: center; }
+  .stat-num { font-size: 26px; font-weight: 600; }
+  .stat-label { font-size: 12px; color: #737370; margin-top: 4px; }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #ccc; border-top-color: #333; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 6px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div id="app">
+  <h1>IntelliChat</h1>
+
+  <!-- Screen 1: Name -->
+  <div id="name-screen" class="screen active">
+    <div class="bubble bubble-bot">
+      <strong>Hallo!</strong> Ich bin dein Informatik-Lernbot namens IntelliChat.<br>
+      Ich stelle dir Fragen aus dem Unterricht und bewerte deine Antworten.<br><br>
+      Wie soll ich dich nennen? <span style="color:#737370;">(optional)</span>
+    </div>
+    <div class="card">
+      <input type="text" id="name-input" placeholder="Dein Name..." maxlength="30" />
+      <div class="row">
+        <button class="primary full" onclick="zeigeThemenauswahl()">Weiter →</button>
+      </div>
+      <p class="dsgvo">🔒 Dein Name wird nur für diese Sitzung verwendet (DSGVO-konform).</p>
+    </div>
+  </div>
+
+  <!-- Screen 2: Thema -->
+  <div id="thema-screen" class="screen">
+    <div class="bubble bubble-bot" id="thema-greeting"></div>
+    <div class="card">
+      <label style="font-size:14px;font-weight:500;display:block;margin-bottom:0.5rem;">Thema wählen:</label>
+      <select id="thema-select">
+        <option value="">Alle Themen (zufällig)</option>
+      </select>
+      <div class="row">
+        <button class="primary full" onclick="startQuiz()">Frage stellen →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Quiz -->
+  <div id="quiz-screen" class="screen">
+    <div class="top-bar">
+      <span class="badge badge-info" id="thema-badge"></span>
+      <span style="font-size:13px;color:#737370;" id="score-text"></span>
+    </div>
+    <div class="bubble bubble-bot" id="frage-bubble"></div>
+    <div class="card">
+      <textarea id="antwort-input" placeholder="Schreib deine Antwort hier..."></textarea>
+      <div class="row">
+        <button class="primary full" id="abgabe-btn" onclick="antwortAbgeben()">Antwort abgeben</button>
+      </div>
+    </div>
+    <div id="feedback-box" style="display:none;" class="card">
+      <div id="feedback-content"></div>
+      <div class="row" style="margin-top:0.75rem;">
+        <button class="primary full" onclick="naechsteFrage()">Nächste Frage →</button>
+        <button onclick="zeigeErgebnis()">Ergebnis</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4: Ergebnis -->
+  <div id="result-screen" class="screen">
+    <div class="bubble bubble-bot" id="result-greeting"></div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-richtig" style="color:#166534;">0</div>
+        <div class="stat-label">Richtig</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-falsch" style="color:#991b1b;">0</div>
+        <div class="stat-label">Falsch</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-pct">0%</div>
+        <div class="stat-label">Ergebnis</div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="primary full" onclick="nochmal()">🔄 Nochmal versuchen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let userName = "", aktFrage = null, richtig = 0, falsch = 0;
+
+function show(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+async function zeigeThemenauswahl() {
+  userName = document.getElementById("name-input").value.trim();
+  document.getElementById("thema-greeting").innerHTML =
+    `${userName ? "Hallo " + userName + "!" : "Hallo!"} Wähle ein Thema oder lass mich zufällig eine Frage auswählen.`;
+  const res = await fetch("/themen");
+  const data = await res.json();
+  const sel = document.getElementById("thema-select");
+  sel.innerHTML = '<option value="">Alle Themen (zufällig)</option>';
+  data.themen.forEach(t => {
+    const opt = document.createElement("option");
+    opt.value = t; opt.textContent = t;
+    sel.appendChild(opt);
+  });
+  show("thema-screen");
+}
+
+async function startQuiz() {
+  richtig = 0; falsch = 0;
+  await ladeFrage();
+  show("quiz-screen");
+}
+
+async function ladeFrage() {
+  const thema = document.getElementById("thema-select").value;
+  const url = thema ? `/neue-frage?thema=${encodeURIComponent(thema)}` : "/neue-frage";
+  const res = await fetch(url);
+  aktFrage = await res.json();
+  document.getElementById("thema-badge").textContent = aktFrage.thema;
+  document.getElementById("frage-bubble").textContent = aktFrage.frage;
+  document.getElementById("antwort-input").value = "";
+  document.getElementById("antwort-input").disabled = false;
+  document.getElementById("feedback-box").style.display = "none";
+  document.getElementById("score-text").textContent = `✓ ${richtig}  ✗ ${falsch}`;
+}
+
+async function antwortAbgeben() {
+  const antwort = document.getElementById("antwort-input").value.trim();
+  if (!antwort) return;
+  const btn = document.getElementById("abgabe-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Wird bewertet...';
+  document.getElementById("antwort-input").disabled = true;
+
+  const res = await fetch("/antwort", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ frage_id: aktFrage.id, antwort })
+  });
+  const data = await res.json();
+  btn.disabled = false;
+  btn.textContent = "Antwort abgeben";
+
+  if (data.korrekt) richtig++; else falsch++;
+  document.getElementById("score-text").textContent = `✓ ${richtig}  ✗ ${falsch}`;
+
+  const badge = data.korrekt
+    ? `<span class="badge badge-success">✓ Richtig!</span>`
+    : `<span class="badge badge-danger">✗ Nicht ganz</span>`;
+  document.getElementById("feedback-content").innerHTML = `
+    ${badge}
+    <p style="font-size:14px;margin-top:0.5rem;">${data.feedback}</p>
+    <div class="musterloesung"><strong>Musterlösung:</strong> ${data.musterloesung}</div>`;
+  document.getElementById("feedback-box").style.display = "block";
+}
+
+async function naechsteFrage() { await ladeFrage(); }
+
+function zeigeErgebnis() {
+  show("result-screen");
+  const total = richtig + falsch;
+  const pct = total > 0 ? Math.round((richtig / total) * 100) : 0;
+  document.getElementById("stat-richtig").textContent = richtig;
+  document.getElementById("stat-falsch").textContent = falsch;
+  document.getElementById("stat-pct").textContent = pct + "%";
+  const name = userName ? userName + ", du" : "Du";
+  document.getElementById("result-greeting").textContent = pct >= 80
+    ? `${name} hast großartig abgeschnitten! 🎉`
+    : pct >= 50 ? `${name} bist auf dem richtigen Weg!`
+    : `${name} solltest die Themen nochmal wiederholen.`;
+}
+
+function nochmal() { richtig = 0; falsch = 0; show("thema-screen"); }
+</script>
+</body>
+</html>

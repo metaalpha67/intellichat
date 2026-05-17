@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin – Informatik-Lernbot</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f5f5f0; min-height: 100vh; padding: 2rem 1rem; }
+  #app { max-width: 860px; margin: 0 auto; }
+
+  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+  h1 { font-size: 20px; font-weight: 600; }
+  .topbar-links { display: flex; gap: 8px; }
+
+  .card { background: #fff; border: 1px solid #e5e5e0; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+  h2 { font-size: 15px; font-weight: 600; margin-bottom: 1rem; }
+
+  label { font-size: 13px; font-weight: 500; display: block; margin-bottom: 0.35rem; margin-top: 0.75rem; }
+  input[type=text], textarea, select {
+    width: 100%; padding: 0.6rem 1rem; font-size: 14px;
+    border: 1px solid #d4d4d0; border-radius: 8px;
+    background: #fff; color: #1a1a1a; outline: none; font-family: inherit;
+  }
+  textarea { resize: vertical; min-height: 70px; }
+  input:focus, textarea:focus, select:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+
+  button { padding: 0.6rem 1.1rem; font-size: 13px; font-weight: 500; border: 1px solid #d4d4d0; border-radius: 8px; background: #fff; color: #1a1a1a; cursor: pointer; transition: background 0.15s; }
+  button:hover { background: #f5f5f0; }
+  button.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  button.primary:hover { background: #333; }
+  button.danger { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+  button.danger:hover { background: #fecaca; }
+  button.small { padding: 0.4rem 0.75rem; font-size: 12px; }
+  a.btn { display: inline-block; padding: 0.6rem 1.1rem; font-size: 13px; font-weight: 500; border: 1px solid #d4d4d0; border-radius: 8px; background: #fff; color: #1a1a1a; text-decoration: none; cursor: pointer; }
+  a.btn:hover { background: #f5f5f0; }
+
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 5px; font-weight: 500; background: #dbeafe; color: #1d4ed8; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid #e5e5e0; color: #737370; font-weight: 500; }
+  td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #f0f0ec; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafaf8; }
+
+  .actions { display: flex; gap: 6px; }
+  .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: #1a1a1a; color: #fff; padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 14px; display: none; z-index: 999; }
+  .toast.show { display: block; }
+
+  /* Modal */
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
+  .modal-bg.show { display: flex; }
+  .modal { background: #fff; border-radius: 12px; padding: 1.5rem; width: 100%; max-width: 520px; margin: 1rem; }
+  .modal h2 { margin-bottom: 1rem; }
+  .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1rem; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <h1>⚙️ Admin-Panel</h1>
+    <div class="topbar-links">
+      <a class="btn" href="/">← Zum Chatbot</a>
+      <a class="btn" href="/admin/logout">Ausloggen</a>
+    </div>
+  </div>
+
+  <!-- Neue Frage -->
+  <div class="card">
+    <h2>➕ Neue Frage hinzufügen</h2>
+    <label>Thema</label>
+    <input type="text" id="neu-thema" placeholder="z.B. Algorithmen" list="thema-vorschlaege" />
+    <datalist id="thema-vorschlaege">
+      {% set themen = fragen | map(attribute='thema') | unique | sort %}
+      {% for t in themen %}<option value="{{ t }}">{% endfor %}
+    </datalist>
+    <label>Frage</label>
+    <input type="text" id="neu-frage" placeholder="z.B. Was ist ein Algorithmus?" />
+    <label>Musterlösung</label>
+    <textarea id="neu-musterloesung" placeholder="Die vollständige Musterantwort..."></textarea>
+    <div style="margin-top:1rem;">
+      <button class="primary" onclick="frageHinzufuegen()">Frage speichern</button>
+    </div>
+  </div>
+
+  <!-- Fragenliste -->
+  <div class="card">
+    <h2>📋 Alle Fragen (<span id="anzahl">{{ fragen|length }}</span>)</h2>
+    <table id="fragen-tabelle">
+      <thead>
+        <tr>
+          <th style="width:120px;">Thema</th>
+          <th>Frage</th>
+          <th style="width:100px;">Aktionen</th>
+        </tr>
+      </thead>
+      <tbody id="fragen-body">
+        {% for f in fragen %}
+        <tr id="row-{{ f.id }}">
+          <td><span class="badge">{{ f.thema }}</span></td>
+          <td>{{ f.frage }}</td>
+          <td class="actions">
+            <button class="small" onclick="oeffneBearbeiten({{ f.id }}, '{{ f.thema|e }}', '{{ f.frage|e }}', '{{ f.musterloesung|e }}')">✏️</button>
+            <button class="small danger" onclick="frageLoeschen({{ f.id }})">🗑️</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if not fragen %}
+    <p style="font-size:13px;color:#737370;text-align:center;padding:1rem;">Noch keine Fragen vorhanden.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Bearbeiten Modal -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h2>✏️ Frage bearbeiten</h2>
+    <input type="hidden" id="edit-id" />
+    <label>Thema</label>
+    <input type="text" id="edit-thema" />
+    <label>Frage</label>
+    <input type="text" id="edit-frage" />
+    <label>Musterlösung</label>
+    <textarea id="edit-musterloesung"></textarea>
+    <div class="modal-footer">
+      <button onclick="schliesseModal()">Abbrechen</button>
+      <button class="primary" onclick="frageSpeichern()">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function zeigToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2500);
+}
+
+async function frageHinzufuegen() {
+  const thema = document.getElementById("neu-thema").value.trim();
+  const frage = document.getElementById("neu-frage").value.trim();
+  const musterloesung = document.getElementById("neu-musterloesung").value.trim();
+  if (!thema || !frage || !musterloesung) { alert("Bitte alle Felder ausfüllen."); return; }
+
+  const res = await fetch("/admin/frage-hinzufuegen", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ thema, frage, musterloesung })
+  });
+  const data = await res.json();
+  if (data.success) {
+    const f = data.frage;
+    const tbody = document.getElementById("fragen-body");
+    const tr = document.createElement("tr");
+    tr.id = `row-${f.id}`;
+    tr.innerHTML = `
+      <td><span class="badge">${f.thema}</span></td>
+      <td>${f.frage}</td>
+      <td class="actions">
+        <button class="small" onclick="oeffneBearbeiten(${f.id}, '${f.thema.replace(/'/g,"\\'")}', '${f.frage.replace(/'/g,"\\'")}', '${f.musterloesung.replace(/'/g,"\\'")}')">✏️</button>
+        <button class="small danger" onclick="frageLoeschen(${f.id})">🗑️</button>
+      </td>`;
+    tbody.appendChild(tr);
+    document.getElementById("anzahl").textContent = tbody.children.length;
+    document.getElementById("neu-thema").value = "";
+    document.getElementById("neu-frage").value = "";
+    document.getElementById("neu-musterloesung").value = "";
+    zeigToast("✓ Frage gespeichert!");
+  }
+}
+
+async function frageLoeschen(id) {
+  if (!confirm("Frage wirklich löschen?")) return;
+  const res = await fetch(`/admin/frage-loeschen/${id}`, { method: "DELETE" });
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById(`row-${id}`)?.remove();
+    const tbody = document.getElementById("fragen-body");
+    document.getElementById("anzahl").textContent = tbody.children.length;
+    zeigToast("🗑️ Frage gelöscht.");
+  }
+}
+
+function oeffneBearbeiten(id, thema, frage, musterloesung) {
+  document.getElementById("edit-id").value = id;
+  document.getElementById("edit-thema").value = thema;
+  document.getElementById("edit-frage").value = frage;
+  document.getElementById("edit-musterloesung").value = musterloesung;
+  document.getElementById("modal-bg").classList.add("show");
+}
+
+function schliesseModal() {
+  document.getElementById("modal-bg").classList.remove("show");
+}
+
+async function frageSpeichern() {
+  const id = document.getElementById("edit-id").value;
+  const thema = document.getElementById("edit-thema").value.trim();
+  const frage = document.getElementById("edit-frage").value.trim();
+  const musterloesung = document.getElementById("edit-musterloesung").value.trim();
+
+  const res = await fetch(`/admin/frage-bearbeiten/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ thema, frage, musterloesung })
+  });
+  const data = await res.json();
+  if (data.success) {
+    const row = document.getElementById(`row-${id}`);
+    row.cells[0].innerHTML = `<span class="badge">${thema}</span>`;
+    row.cells[1].textContent = frage;
+    // Bearbeiten-Button updaten
+    row.cells[2].innerHTML = `
+      <button class="small" onclick="oeffneBearbeiten(${id}, '${thema.replace(/'/g,"\\'")}', '${frage.replace(/'/g,"\\'")}', '${musterloesung.replace(/'/g,"\\'")}')">✏️</button>
+      <button class="small danger" onclick="frageLoeschen(${id})">🗑️</button>`;
+    schliesseModal();
+    zeigToast("✓ Frage aktualisiert!");
+  }
+}
+
+document.getElementById("modal-bg").addEventListener("click", e => {
+  if (e.target === document.getElementById("modal-bg")) schliesseModal();
+});
+</script>
+</body>
+</html>
