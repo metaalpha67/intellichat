@@ -76,5 +76,107 @@
     "thema": "Bugs & Fehler",
     "frage": "Dies ist eine Testfrage! Stelle sie mir wie eine normale Frage!",
     "musterloesung": "Test! Test ist die Antwort!"
+  },
+  {
+    "id": 14,
+    "thema": "Cloud",
+    "frage": "Was ist eine Cloud?",
+    "musterloesung": "Eine Cloud ist ein großes Rechenzentrum, welches mit dem Internet verbunden ist"
+  },
+  {
+    "id": 15,
+    "thema": "Cloud",
+    "frage": "Welche Vorteile bieten Cloud-dienste?",
+    "musterloesung": "Cloud-dienste bieten flexible Speicher-und Nutzungsmöglichkeiten, schnelle Erweiterung von Ressourcen und oft günstige Bezahlmodelle."
+  },
+  {
+    "id": 16,
+    "thema": "Cyberangriffe",
+    "frage": "Was ist ein Hackerangrif?",
+    "musterloesung": "Ein Hackerangriff ist ein unerlaubter Zugriff auf Computer, Netzwerke oder Daten, um Schaden anzurichten oder Informationen zu stehlen."
+  },
+  {
+    "id": 17,
+    "thema": "Cyberangriffe",
+    "frage": "Wie kann man sich vor ihnen schützen?",
+    "musterloesung": "Man kann sich vor ihnen schützen, indem man starke Passwörter benutzt, keine unbekannten Links anklickt und regelmäßig Updates macht."
+  },
+  {
+    "id": 18,
+    "thema": "Chancen und Risiken sozialer Medien",
+    "frage": "Was sind Risiken von sozialen Medien?",
+    "musterloesung": "Sucht, Cybermobbing und Fake News."
+  },
+  {
+    "id": 19,
+    "thema": "Chancen und Risiken sozialer Medien",
+    "frage": "Was sind die Chancen von sozialen Medien?",
+    "musterloesung": "Schnelle Kommunikation und einfacher Zugang zu Informationen weltweit."
+  },
+  {
+    "id": 20,
+    "thema": "Datenschutz",
+    "frage": "Was macht Datenschutz?",
+    "musterloesung": "Er soll die Privatsphäre von Personen schützen."
+  },
+  {
+    "id": 21,
+    "thema": "Internet",
+    "frage": "Was gibt es für Gefahren im Internet?",
+    "musterloesung": "Cybermobbing, Phishing, Malware, Identitätsdiebstahl, Datenschutzprobleme."
+  },
+  {
+    "id": 22,
+    "thema": "Internet",
+    "frage": "Was ist internet?",
+    "musterloesung": "Das Internet ist ein weltweites Netzwerk, dass Computer verbindet und Kommunikation sowie Informationsaustausch ermöglicht."
+  },
+  {
+    "id": 23,
+    "thema": "MP3-Datei",
+    "frage": "Was ist eine MP3-Datei?",
+    "musterloesung": "Ein digitales Audioformat welches Dateien in Form von Nullen und Einsen enthält."
+  },
+  {
+    "id": 24,
+    "thema": "MP3-Datei",
+    "frage": "Vorteile von MP3-Datei",
+    "musterloesung": "Die Datei spart Speicherplatz, es ist schnell zu übertragen und funktioniert auf fast allen Geräten."
+  },
+  {
+    "id": 25,
+    "thema": "Pixel- und Vektorgrafiken",
+    "frage": "Was ist die Verwendung von Pixelgrafiken?",
+    "musterloesung": "Man verwendet sie in der digitalen Bildbearbeitung, Fotografie und Präsentationsgrafiken."
+  },
+  {
+    "id": 26,
+    "thema": "Pixel- und Vektorgrafiken",
+    "frage": "Was ist die Verwendung von Vektorgrafiken?",
+    "musterloesung": "Man verwendet sie bei Logos, Computergrafiken für Spiele und Druck."
+  },
+  {
+    "id": 27,
+    "thema": "Passwörter",
+    "frage": "Wofür dienen sichere Passwörter?",
+    "musterloesung": "Sie dienen zur Authentifizierung."
+  },
+  {
+    "id": 28,
+    "thema": "Passwörter",
+    "frage": "Nenne Methoden wie Passwörter leicht angegriffen werden können",
+    "musterloesung": "Brute-Force-Angriffe, Wörterbuchangriffe und Phishing"
+  },
+  {
+    "id": 29,
+    "thema": "Algorithmen",
+    "frage": "Was ist ein Algorithmus?",
+    "musterloesung": "Ein Algorithmus ist eine klare und endliche Abfolge von Anweisungen zur Lösung eines Problems oder einer Aufgabe."
+  },
+  {
+    "id": 30,
+    "thema": "Algorithmen",
+    "frage": "Nenne Beispiele von Algorithmen",
+    "musterloesung": "Navi, Ampel im Straßenverkehr, Google Suchanfragen, Social Media Content."
   }
 ]
